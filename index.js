@@ -12,8 +12,8 @@ const Average = (arr) => {
   }
   return sum / arr.length;
 }
-// 标准差
-const StandardDeviation = (arr) => {
+// 方差
+const Variance = (arr) => {
   let avg = Average(arr);
   let sum = 0;
   for (let i = 0; i < arr.length; i++) {
@@ -33,7 +33,7 @@ const SampleList = [];
 // 平均采样列表
 const AverageSampleList = [];
 // 标准差采样列表
-const StandardDeviationSampleList = [];
+const VarianceSampleList = [];
 // 标记
 let FlagID = -1;
 // 临界水平
@@ -41,7 +41,7 @@ const CriticalLevel = 120;
 // 平均临界水平
 let AverageCriticalLevel = CriticalLevel;
 // 标准差临界水平
-let StandardDeviationCriticalLevel = CriticalLevel;
+let VarianceCriticalLevel = CriticalLevel;
 // 计时采样
 const TimingSampling = () => {
   FlagID++;
@@ -55,19 +55,19 @@ const TimingSampling = () => {
   Print(SampleList);
   if (FlagID && FlagID % 5 == 0 && DevToolsVisibilityState) {
     const avg = Average(SampleList);
-    const sd = StandardDeviation(SampleList);
+    const sd = Variance(SampleList);
     AddSample(AverageSampleList, avg);
-    AddSample(StandardDeviationSampleList, sd);
-    Print(`=== Average: ${avg} StandardDeviation: ${sd} === `);
-    if (avg > AverageCriticalLevel || (sd > StandardDeviationCriticalLevel && SampleList[0] < SampleList[SampleList.length - 1])) {
+    AddSample(VarianceSampleList, sd);
+    Print(`=== Average: ${avg} Variance: ${sd} === `);
+    if (avg > AverageCriticalLevel || (sd > VarianceCriticalLevel && SampleList[0] < SampleList[SampleList.length - 1])) {
       // 检测到 DevTools
       Print(`**** !!!!!! DevTools detected !!!!! ****`);
     } else {
       // 没有检测到 DevTools 调低参数水平
       if (FlagID >= 25) {
         AverageCriticalLevel = Average([Math.min(Math.max(...AverageSampleList), AverageCriticalLevel), CriticalLevel]);
-        StandardDeviationCriticalLevel = Average([Math.min(Math.max(...StandardDeviationSampleList), StandardDeviationCriticalLevel), CriticalLevel]);
-        Print(`=== AverageCriticalLevel: ${AverageCriticalLevel} StandardDeviationCriticalLevel: ${StandardDeviationCriticalLevel} ===`);
+        VarianceCriticalLevel = Average([Math.min(Math.max(...VarianceSampleList), VarianceCriticalLevel), CriticalLevel]);
+        Print(`=== AverageCriticalLevel: ${AverageCriticalLevel} VarianceCriticalLevel: ${VarianceCriticalLevel} ===`);
       }
     }
   }
