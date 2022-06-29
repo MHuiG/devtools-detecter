@@ -28,6 +28,18 @@ const AddSample = (arr, item) => {
     arr.shift();
   }
 }
+// 基准
+const Benchmark = () => {
+  const startTime = performance.now();
+  const maxn = 7000000;
+  const pris = new Int8Array(maxn + 1)
+  for (var i = 2; i <= maxn; ++i)
+    if (pris[i] === 0)
+      for (var j = i * i; j <= maxn; j += i)
+        pris[j] = 1
+  const diff = performance.now() - startTime;
+  return diff;
+}
 // 采样列表
 const SampleList = [];
 // 平均采样列表
@@ -39,8 +51,15 @@ let FlagID = -1;
 // CPU 核数
 const hardwareConcurrency = navigator.hardwareConcurrency || 4;
 Print(`hardwareConcurrency: ${hardwareConcurrency}`)
+if (performance && performance.memory) {
+  Print(`memory used: ${performance.memory.usedJSHeapSize}`)
+  Print(`memory total: ${performance.memory.totalJSHeapSize}`)
+  Print(`memory limit: ${performance.memory.jsHeapSizeLimit}`)
+}
 // 临界水平
-const CriticalLevel = 120 + (hardwareConcurrency < 4 ? (4 - hardwareConcurrency) * 12 : 0);
+const CriticalLevel = Benchmark();
+Print(`Benchmark: ${CriticalLevel}`)
+// const CriticalLevel = 120 + (hardwareConcurrency < 4 ? (4 - hardwareConcurrency) * 5 : 0);
 // 平均临界水平
 let AverageCriticalLevel = CriticalLevel;
 // 方差临界水平
@@ -57,9 +76,6 @@ const TimingSampling = () => {
   AddSample(SampleList, diff);
   Print(SampleList);
   if (FlagID && FlagID % 5 == 0 && DevToolsVisibilityState) {
-    Print(`memory used: ${performance.memory.usedJSHeapSize}`)
-    Print(`memory total: ${performance.memory.totalJSHeapSize}`)
-    Print(`memory limit: ${performance.memory.jsHeapSizeLimit}`)
     const avg = Average(SampleList);
     const sd = Variance(SampleList);
     AddSample(AverageSampleList, avg);
