@@ -40,7 +40,7 @@ let FlagID = -1;
 const hardwareConcurrency = navigator.hardwareConcurrency || 4;
 Print(`hardwareConcurrency: ${hardwareConcurrency}`)
 // 临界水平
-const CriticalLevel = 120 + (hardwareConcurrency < 4 ? (4 - hardwareConcurrency) * 20 : 0);
+const CriticalLevel = 120 + (hardwareConcurrency < 4 ? (4 - hardwareConcurrency) * 12 : 0);
 // 平均临界水平
 let AverageCriticalLevel = CriticalLevel;
 // 方差临界水平
@@ -57,6 +57,9 @@ const TimingSampling = () => {
   AddSample(SampleList, diff);
   Print(SampleList);
   if (FlagID && FlagID % 5 == 0 && DevToolsVisibilityState) {
+    Print(`memory used: ${performance.memory.usedJSHeapSize}`)
+    Print(`memory total: ${performance.memory.totalJSHeapSize}`)
+    Print(`memory limit: ${performance.memory.jsHeapSizeLimit}`)
     const avg = Average(SampleList);
     const sd = Variance(SampleList);
     AddSample(AverageSampleList, avg);
