@@ -64,13 +64,22 @@ Print(`Benchmark: ${CriticalLevel}`)
 let AverageCriticalLevel = CriticalLevel;
 // 方差临界水平
 let VarianceCriticalLevel = CriticalLevel;
+// 原型污染 猫鼠游戏？？？？
+Array().__proto__.__proto__.FuckLog = {};
+['log', 'clear'].forEach(function (method) {
+  Array().__proto__.__proto__.FuckLog[method] = console[method].bind(console);
+});
 // 计时采样
 const TimingSampling = () => {
   FlagID++;
   const startTime = performance.now();
   for (let check = 0; check < 1000; check++) {
-    console.log(check);
-    console.clear();
+    const FuckLog = window.FuckLog || document.FuckLog || console.FuckLog || alert.FuckLog || Object.FuckLog || Array().FuckLog;
+    if (!FuckLog.log) {
+      alert("Hacked!");
+    }
+    FuckLog.log(check);
+    FuckLog.clear();
   }
   const diff = performance.now() - startTime;
   AddSample(SampleList, diff);
