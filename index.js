@@ -36,8 +36,11 @@ const AverageSampleList = [];
 const VarianceSampleList = [];
 // 标记
 let FlagID = -1;
+// CPU 核数
+const hardwareConcurrency = navigator.hardwareConcurrency || 4;
+Print(`hardwareConcurrency: ${hardwareConcurrency}`)
 // 临界水平
-const CriticalLevel = 120;
+const CriticalLevel = 120 + (hardwareConcurrency < 4 ? (4 - hardwareConcurrency) * 20 : 0);
 // 平均临界水平
 let AverageCriticalLevel = CriticalLevel;
 // 方差临界水平
@@ -59,11 +62,12 @@ const TimingSampling = () => {
     AddSample(AverageSampleList, avg);
     AddSample(VarianceSampleList, sd);
     Print(`=== Average: ${avg} Variance: ${sd} === `);
+    // 平均值大于临界水平 或 采样值成突增趋势
     if (avg > AverageCriticalLevel || (sd > VarianceCriticalLevel && Average([SampleList[0], SampleList[1], SampleList[2]]) < Average([SampleList[1], SampleList[2], SampleList[3]]) && Average([SampleList[1], SampleList[2], SampleList[3]]) < Average([SampleList[2], SampleList[3], SampleList[4]]))) {
       // 检测到 DevTools
       Print(`**** !!!!!! DevTools detected !!!!! ****`);
     } else {
-      // 没有检测到 DevTools 调低参数水平
+      // 没有检测到 DevTools 微调参数水平
       if (FlagID >= 25) {
         AverageCriticalLevel = Average([Math.min(Math.max(...AverageSampleList), AverageCriticalLevel), CriticalLevel]);
         VarianceCriticalLevel = Average([Math.min(Math.max(...VarianceSampleList), VarianceCriticalLevel), CriticalLevel]);
