@@ -65,16 +65,23 @@ let AverageCriticalLevel = CriticalLevel;
 // 方差临界水平
 let VarianceCriticalLevel = CriticalLevel;
 // 原型污染 猫鼠游戏？？？？
-Array().__proto__.__proto__.FuckLog = {};
+const randkey = Math.random().toString(36).substr(2);
+Array().__proto__.__proto__[randkey] = {};
 ['log', 'clear'].forEach(function (method) {
-  Array().__proto__.__proto__.FuckLog[method] = console[method].bind(console);
+  Array().__proto__.__proto__[randkey][method] = console[method].bind(console);
 });
 // 计时采样
 const TimingSampling = () => {
   FlagID++;
+  const randkey2 = Math.random().toString(36).substr(2);
+  Array().__proto__.__proto__[randkey2] = {};
+  const FuckLog = window[randkey] || document[randkey] || console[randkey] || alert[randkey] || Object[randkey] || Array()[randkey];
+  ['log', 'clear'].forEach(function (method) {
+    Array().__proto__.__proto__[randkey2][method] = FuckLog[method].bind(FuckLog);
+  });
   const startTime = performance.now();
   for (let check = 0; check < 1000; check++) {
-    const FuckLog = window.FuckLog || document.FuckLog || console.FuckLog || alert.FuckLog || Object.FuckLog || Array().FuckLog;
+    const FuckLog = window[randkey2] || document[randkey2] || console[randkey2] || alert[randkey2] || Object[randkey2] || Array()[randkey2];
     if (!FuckLog.log) {
       alert("Hacked!");
     }
