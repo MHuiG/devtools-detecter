@@ -59,7 +59,7 @@ const TimingSampling = () => {
     AddSample(AverageSampleList, avg);
     AddSample(VarianceSampleList, sd);
     Print(`=== Average: ${avg} Variance: ${sd} === `);
-    if (avg > AverageCriticalLevel || (sd > VarianceCriticalLevel && Average([SampleList[0], SampleList[1], SampleList[2]]) < Average([SampleList[1], SampleList[2], SampleList[3]]) && Average([SampleList[2], SampleList[3], SampleList[2]]) < Average([SampleList[2], SampleList[3], SampleList[4]]))) {
+    if (avg > AverageCriticalLevel || (sd > VarianceCriticalLevel && Average([SampleList[0], SampleList[1], SampleList[2]]) < Average([SampleList[1], SampleList[2], SampleList[3]]) && Average([SampleList[1], SampleList[2], SampleList[3]]) < Average([SampleList[2], SampleList[3], SampleList[4]]))) {
       // 检测到 DevTools
       Print(`**** !!!!!! DevTools detected !!!!! ****`);
     } else {
