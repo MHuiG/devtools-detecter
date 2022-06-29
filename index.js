@@ -32,7 +32,7 @@ const AddSample = (arr, item) => {
 const SampleList = [];
 // 平均采样列表
 const AverageSampleList = [];
-// 标准差采样列表
+// 方差采样列表
 const VarianceSampleList = [];
 // 标记
 let FlagID = -1;
@@ -40,7 +40,7 @@ let FlagID = -1;
 const CriticalLevel = 120;
 // 平均临界水平
 let AverageCriticalLevel = CriticalLevel;
-// 标准差临界水平
+// 方差临界水平
 let VarianceCriticalLevel = CriticalLevel;
 // 计时采样
 const TimingSampling = () => {
