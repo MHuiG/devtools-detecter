@@ -1,4 +1,4 @@
-# [devtools detect](https://github.com/MHuiG/timing-sampling-devtools-detect)
+# [devtools detecter](https://github.com/MHuiG/devtools-detecter)
 基于定时性能采样的 DevTools 检测
 
 [Demo](https://devtools-detect.mhuig.top)
