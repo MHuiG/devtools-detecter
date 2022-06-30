@@ -11,8 +11,8 @@
 </head>
 
 <body>
-  <script src="index.js"></script>
-  <script>
+  <script type="module">
+    import DevtoolsDetecter from "./index.js"
     DevtoolsDetecter.debug()
     DevtoolsDetecter.addListener(isOpen => {
       if (isOpen) {
