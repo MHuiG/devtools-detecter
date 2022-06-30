@@ -1,6 +1,6 @@
 {
   "name": "devtools-detecter",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "devtools detect",
   "scripts": {
     "dev": "vite",
