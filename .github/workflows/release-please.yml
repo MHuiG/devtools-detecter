@@ -1,0 +1,30 @@
+name: release-please
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  release-please:
+    if: github.repository == 'MHuiG/devtools-detecter'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: node
+          package-name: "devtools-detecter"
+  npm-publish:
+    if: ${{ contains(github.event.head_commit.message, 'chore') && contains(github.event.head_commit.message, 'release') && github.repository == 'MHuiG/devtools-detecter' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org
+      - name: Publish
+        run: |
+          npm i
+          npm run build
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}

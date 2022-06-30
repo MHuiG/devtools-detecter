@@ -1,12 +1,27 @@
 {
   "name": "devtools-detecter",
   "version": "0.0.1",
+  "description": "devtools detect",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "main": "./dist/DevtoolsDetecter.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MHuiG/devtools-detecter.git"
+  },
+  "author": "MHuiG",
+  "keywords": [
+    "devtools",
+    "detect"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MHuiG/devtools-detecter/issues"
+  },
+  "homepage": "https://github.com/MHuiG/devtools-detecter#readme",
   "devDependencies": {
     "vite": "^2.9.9"
   }
