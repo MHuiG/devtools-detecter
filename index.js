@@ -65,7 +65,7 @@ let AverageCriticalLevel = CriticalLevel;
 // 方差临界水平
 let VarianceCriticalLevel = CriticalLevel;
 // 原型污染 猫鼠游戏？？？？
-const randkey = Math.random().toString(36).substr(2);
+const randkey = Math.random().toString(36).substring(2);
 Array().__proto__.__proto__[randkey] = {};
 ['log', 'clear'].forEach(function (method) {
   Array().__proto__.__proto__[randkey][method] = console[method].bind(console);
@@ -73,7 +73,7 @@ Array().__proto__.__proto__[randkey] = {};
 // 计时采样
 const TimingSampling = () => {
   FlagID++;
-  const randkey2 = Math.random().toString(36).substr(2);
+  const randkey2 = Math.random().toString(36).substring(2);
   Array().__proto__.__proto__[randkey2] = {};
   const FuckLog = window[randkey] || document[randkey] || console[randkey] || alert[randkey] || Object[randkey] || Array()[randkey];
   ['log', 'clear'].forEach(function (method) {
@@ -91,17 +91,19 @@ const TimingSampling = () => {
   const diff = performance.now() - startTime;
   AddSample(SampleList, diff);
   Print(SampleList);
-  if (FlagID && FlagID % 5 == 0 && DevToolsVisibilityState) {
+  if (FlagID && FlagID % 5 == 0) {
     const avg = Average(SampleList);
     const sd = Variance(SampleList);
     AddSample(AverageSampleList, avg);
     AddSample(VarianceSampleList, sd);
     Print(`=== Average: ${avg} Variance: ${sd} === `);
-    // 平均值大于临界水平 或 采样值成突增趋势
-    if (avg > AverageCriticalLevel || (sd > VarianceCriticalLevel && Average([SampleList[0], SampleList[1], SampleList[2]]) < Average([SampleList[1], SampleList[2], SampleList[3]]) && Average([SampleList[1], SampleList[2], SampleList[3]]) < Average([SampleList[2], SampleList[3], SampleList[4]]))) {
+    // 平均值大于临界水平 或 采样值成接近临界水平的突增趋势
+    if (avg > AverageCriticalLevel || (avg > AverageCriticalLevel * 0.85 && sd > VarianceCriticalLevel && Average([SampleList[0], SampleList[1], SampleList[2]]) < Average([SampleList[1], SampleList[2], SampleList[3]]) && Average([SampleList[1], SampleList[2], SampleList[3]]) < Average([SampleList[2], SampleList[3], SampleList[4]]))) {
       // 检测到 DevTools
       Print(`**** !!!!!! DevTools detected !!!!! ****`);
+      document.title = "DevTools detected";
     } else {
+      document.title = "DevTools NOT detected";
       // 没有检测到 DevTools 微调参数水平
       if (FlagID >= 25) {
         AverageCriticalLevel = Average([Math.min(Math.max(...AverageSampleList), AverageCriticalLevel), CriticalLevel]);
@@ -111,16 +113,6 @@ const TimingSampling = () => {
     }
   }
 }
-if (typeof DevToolsVisibilityState == "undefined") {
-  DevToolsVisibilityState = 1;
-  document.addEventListener("visibilitychange", function () {
-    if (document.visibilityState == "visible") {
-      DevToolsVisibilityState = 1;
-    }
-    if (document.visibilityState == "hidden") {
-      DevToolsVisibilityState = 0;
-    }
-  });
-}
+
 setInterval(TimingSampling, 500);
 
