@@ -1,0 +1,14 @@
+{
+  "name": "devtools-detecter",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "main": "./dist/DevtoolsDetecter.js",
+  "devDependencies": {
+    "vite": "^2.9.9"
+  }
+}

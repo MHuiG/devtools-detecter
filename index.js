@@ -196,3 +196,4 @@ const DevtoolsDetecter = (function () {
   return new DevtoolsDetecter();
 })()
 
+export default DevtoolsDetecter;
