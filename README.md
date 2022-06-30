@@ -7,7 +7,7 @@
 ## Usage
 
 ```html
-<script src="./DevtoolsDetecter.js"></script>
+<script src="./dist/DevtoolsDetecter.js"></script>
 <script>
   DevtoolsDetecter.debug()
   DevtoolsDetecter.addListener(isOpen => {

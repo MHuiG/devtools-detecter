@@ -4,7 +4,7 @@ import { resolve } from 'path'
 export default defineConfig({
   build: {
     target: 'es2015',
-    outDir: resolve(__dirname, "docs"),
+    outDir: resolve(__dirname, "dist"),
     minify: 'terser',
     emptyOutDir: false,
     lib: {
