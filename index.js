@@ -91,7 +91,6 @@ const DevtoolsDetector = (function () {
   let FlagID = -1;
   // 临界水平
   const CriticalLevel = Benchmark();
-  Print(`Benchmark: ${CriticalLevel}`)
   // 平均临界水平
   let AverageCriticalLevel = CriticalLevel;
   // 方差临界水平
@@ -151,6 +150,7 @@ const DevtoolsDetector = (function () {
         Print(`memory total: ${performance.memory.totalJSHeapSize}`)
         Print(`memory limit: ${performance.memory.jsHeapSizeLimit}`)
       }
+      Print(`Benchmark: ${CriticalLevel}`)
     }
     getStatus() {
       return isOpen;
