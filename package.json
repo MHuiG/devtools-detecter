@@ -7,7 +7,7 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "main": "./dist/DevtoolsDetecter.js",
+  "main": "./docs/DevtoolsDetecter.js",
   "devDependencies": {
     "vite": "^2.9.9"
   }
