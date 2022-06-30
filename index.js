@@ -1,4 +1,4 @@
-const DevtoolsDetector = (function () {
+const DevtoolsDetecter = (function () {
   let isOpen = false;
   let debug = false;
   const listeners = [];
@@ -18,21 +18,44 @@ const DevtoolsDetector = (function () {
     }
   }
   // Dogs And Cats
+  const MyBigCat = () => {
+    try {
+      const p = [Object, Array, Set, Map, RegExp, String, ""];
+      for (const iterator of p) {
+        if (iterator && iterator.__proto__ && iterator.__proto__.__proto__ && iterator.__proto__.__proto__.constructor) {
+          if (iterator.__proto__.__proto__.constructor.name == 'Object') {
+            return iterator;
+          }
+        }
+      }
+      for (const iterator of Object.keys(window)) {
+        if (window[iterator] && window[iterator].__proto__ && window[iterator].__proto__.__proto__ && window[iterator].__proto__.__proto__.constructor) {
+          if (window[iterator].__proto__.__proto__.constructor.name == 'Object') {
+            return window[iterator];
+          }
+        }
+      }
+    } catch (error) { }
+  }
   const MyWhiteCat = (key, child, parent) => {
-    Array().__proto__.__proto__[key] = child.bind(parent);
+    MyBigCat().__proto__.__proto__[key] = child.bind(parent);
   }
   const MyBlackCat = (parentKey, childKey, child, parent) => {
-    const dog = Array().__proto__.__proto__;
+    const dog = MyBigCat().__proto__.__proto__;
     if (typeof dog[parentKey] == "undefined") {
       dog[parentKey] = {};
     }
     dog[parentKey][childKey] = child.bind(parent);
   }
   const MyWhiteDog = () => {
-    return Math.random().toString(36).substring(2);
+    try {
+      return MathCat.random().toString(36).substring(2);
+    } catch (error) {
+      return Math.random().toString(36).substring(2);
+    }
   }
   const MyBlackDog = (key) => {
-    return window[key] || document[key] || console[key] || alert[key] || Object[key] || Array()[key];
+    return window[key] || document[key] || MyBigCat()[key];
   }
   const MyRedCat = (child, parent) => {
     const key = MyWhiteDog();
@@ -44,6 +67,13 @@ const DevtoolsDetector = (function () {
     MyBlackCat(consoleDog, method, console[method], console)
   });
   const setTimeoutCat = MyRedCat(setTimeout, window)
+  const performanceNowCat = MyRedCat(performance.now, performance)
+  const Int8ArrayCat = MyRedCat(Int8Array, window)
+  const MathDog = MyWhiteDog();
+  ['pow', 'min', 'max', 'random'].forEach(function (method) {
+    MyBlackCat(MathDog, method, Math[method], Math)
+  });
+  const MathCat = MyBlackDog(MathDog)
 
   // 平均值
   const Average = (arr) => {
@@ -58,7 +88,7 @@ const DevtoolsDetector = (function () {
     let avg = Average(arr);
     let sum = 0;
     for (let i = 0; i < arr.length; i++) {
-      sum += Math.pow(arr[i] - avg, 2);
+      sum += MathCat.pow(arr[i] - avg, 2);
     }
     return sum / arr.length;
   }
@@ -71,14 +101,14 @@ const DevtoolsDetector = (function () {
   }
   // 基准
   const Benchmark = () => {
-    const startTime = performance.now();
+    const startTime = performanceNowCat();
     const maxn = 7000000;
-    const pris = new Int8Array(maxn + 1)
+    const pris = new Int8ArrayCat(maxn + 1)
     for (var i = 2; i <= maxn; ++i)
       if (pris[i] === 0)
         for (var j = i * i; j <= maxn; j += i)
           pris[j] = 1
-    const diff = performance.now() - startTime;
+    const diff = performanceNowCat() - startTime;
     return diff;
   }
   // 采样列表
@@ -103,7 +133,7 @@ const DevtoolsDetector = (function () {
     ['log', 'clear'].forEach(function (method) {
       MyBlackCat(consoleDogBrother, method, LogCat[method], LogCat)
     });
-    const startTime = performance.now();
+    const startTime = performanceNowCat();
     for (let check = 0; check < 1000; check++) {
       const LogCatBrother = MyBlackDog(consoleDogBrother)
       if (!LogCatBrother.log) {
@@ -112,7 +142,7 @@ const DevtoolsDetector = (function () {
       LogCatBrother.log(check);
       LogCatBrother.clear();
     }
-    const diff = performance.now() - startTime;
+    const diff = performanceNowCat() - startTime;
     AddSample(SampleList, diff);
     Print(SampleList);
     if (FlagID && FlagID % 5 == 0) {
@@ -131,8 +161,8 @@ const DevtoolsDetector = (function () {
         isOpen = false;
         // 微调参数水平
         if (FlagID >= 25) {
-          AverageCriticalLevel = Average([Math.min(Math.max(...AverageSampleList), AverageCriticalLevel), CriticalLevel]);
-          VarianceCriticalLevel = Average([Math.min(Math.max(...VarianceSampleList), VarianceCriticalLevel), CriticalLevel]);
+          AverageCriticalLevel = Average([MathCat.min(MathCat.max(...AverageSampleList), AverageCriticalLevel), CriticalLevel]);
+          VarianceCriticalLevel = Average([MathCat.min(MathCat.max(...VarianceSampleList), VarianceCriticalLevel), CriticalLevel]);
           Print(`=== AverageCriticalLevel: ${AverageCriticalLevel} VarianceCriticalLevel: ${VarianceCriticalLevel} ===`);
         }
       }
@@ -141,9 +171,10 @@ const DevtoolsDetector = (function () {
     setTimeoutCat(TimingSampling, 500);
   }
 
-  class DevtoolsDetector {
+  class DevtoolsDetecter {
     debug() {
       debug = true;
+      Print(`ua: ${navigator.userAgent}`)
       Print(`hardwareConcurrency: ${navigator.hardwareConcurrency}`)
       if (performance && performance.memory) {
         Print(`memory used: ${performance.memory.usedJSHeapSize}`)
@@ -162,15 +193,6 @@ const DevtoolsDetector = (function () {
       return TimingSampling();
     }
   }
-  return new DevtoolsDetector();
+  return new DevtoolsDetecter();
 })()
 
-DevtoolsDetector.debug()
-DevtoolsDetector.addListener(isOpen => {
-  if (isOpen) {
-    document.title = "DevTools detected";
-  } else {
-    document.title = "DevTools NOT detected";
-  }
-})
-DevtoolsDetector.launch()
