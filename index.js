@@ -145,7 +145,7 @@ const DevtoolsDetector = (function () {
   class DevtoolsDetector {
     debug() {
       debug = true;
-      Print(`hardwareConcurrency: ${navigator.hardwareConcurrency || 4}`)
+      Print(`hardwareConcurrency: ${navigator.hardwareConcurrency}`)
       if (performance && performance.memory) {
         Print(`memory used: ${performance.memory.usedJSHeapSize}`)
         Print(`memory total: ${performance.memory.totalJSHeapSize}`)
