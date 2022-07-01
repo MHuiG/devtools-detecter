@@ -165,7 +165,7 @@ S_i = \frac{1}{m}\sum_{j=1+i}^{m+i}X_j
 $$
 
 $$
-\begin{cases} S_1 > S_2 \\\\ S_2 > S_3 \\\\ .... \\\\ S_i > S_i+1 \end{cases}
+\begin{cases} S_1 > S_2 \\\\ S_2 > S_3 \\\\ .... \\\\ S_{n-m} > S_{n-m+1} \end{cases}
 $$
 
 ToDo：
