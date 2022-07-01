@@ -1,6 +1,10 @@
 const DevtoolsDetecter = (function () {
   let isOpen = false;
   let debug = false;
+  let benchmarkMaxN = 7000000;
+  let timingSamplingMaxN = 1000;
+  let timer = 500;
+  let timeOutCtl = null;
   const listeners = [];
   const RunListeners = () => {
     for (const listener of listeners) {
@@ -101,9 +105,9 @@ const DevtoolsDetecter = (function () {
     }
   }
   // 基准
-  const Benchmark = () => {
+  let Benchmark = () => {
     const startTime = performanceNowCat();
-    const maxn = 7000000;
+    const maxn = benchmarkMaxN;
     const pris = new Int8ArrayCat(maxn + 1)
     for (var i = 2; i <= maxn; ++i)
       if (pris[i] === 0)
@@ -130,7 +134,7 @@ const DevtoolsDetecter = (function () {
   const TimingSampling = () => {
     FlagID++;
     const startTime = performanceNowCat();
-    for (let check = 0; check < 1000; check++) {
+    for (let check = 0; check < timingSamplingMaxN; check++) {
       if (!LogCat.log) {
         alert("Hacked!");
       }
@@ -163,7 +167,7 @@ const DevtoolsDetecter = (function () {
       }
     }
     RunListeners();
-    setTimeoutCat(TimingSampling, 500);
+    timeOutCtl = setTimeoutCat(TimingSampling, timer);
   }
 
   class DevtoolsDetecter {
@@ -181,11 +185,26 @@ const DevtoolsDetecter = (function () {
     getStatus() {
       return isOpen;
     }
+    setBenchmarkMaxN(n) {
+      benchmarkMaxN = n;
+    }
+    setTimingSamplingMaxN(n) {
+      timingSamplingMaxN = n;
+    }
+    setBenchmark(callBack) {
+      Benchmark = callBack;
+    }
+    setTimer(t) {
+      timer = t;
+    }
     addListener(callBack) {
       listeners.push(callBack);
     }
     launch() {
       return TimingSampling();
+    }
+    stop() {
+      clearTimeout(timeOutCtl);
     }
   }
   return new DevtoolsDetecter();
