@@ -12,9 +12,9 @@ const DevtoolsDetecter = (function () {
   // 屏幕打印
   const Print = (msg) => {
     if (debug) {
-      const div = document.createElement("div")
-      div.innerHTML = `${msg}<br>`
-      document.body.append(div)
+      const div = document.createElement("div");
+      div.innerHTML = `${msg}<br>`;
+      document.body.append(div);
     }
   }
   // Dogs And Cats
@@ -64,16 +64,17 @@ const DevtoolsDetecter = (function () {
   }
   const consoleDog = MyWhiteDog();
   ['log', 'clear'].forEach(function (method) {
-    MyBlackCat(consoleDog, method, console[method], console)
+    MyBlackCat(consoleDog, method, console[method], console);
   });
-  const setTimeoutCat = MyRedCat(setTimeout, window)
+  const setTimeoutCat = MyRedCat(setTimeout, window);
   const performanceNowCat = MyRedCat(performance.now, performance)
-  const Int8ArrayCat = MyRedCat(Int8Array, window)
+  const Int8ArrayCat = MyRedCat(Int8Array, window);
   const MathDog = MyWhiteDog();
   ['pow', 'min', 'max', 'random'].forEach(function (method) {
-    MyBlackCat(MathDog, method, Math[method], Math)
+    MyBlackCat(MathDog, method, Math[method], Math);
   });
-  const MathCat = MyBlackDog(MathDog)
+  const MathCat = MyBlackDog(MathDog);
+  const LogCat = MyBlackDog(consoleDog);
 
   // 平均值
   const Average = (arr) => {
@@ -107,7 +108,7 @@ const DevtoolsDetecter = (function () {
     for (var i = 2; i <= maxn; ++i)
       if (pris[i] === 0)
         for (var j = i * i; j <= maxn; j += i)
-          pris[j] = 1
+          pris[j] = 1;
     const diff = performanceNowCat() - startTime;
     return diff;
   }
@@ -128,19 +129,13 @@ const DevtoolsDetecter = (function () {
   // 计时采样
   const TimingSampling = () => {
     FlagID++;
-    const consoleDogBrother = MyWhiteDog();
-    const LogCat = MyBlackDog(consoleDog);
-    ['log', 'clear'].forEach(function (method) {
-      MyBlackCat(consoleDogBrother, method, LogCat[method], LogCat)
-    });
     const startTime = performanceNowCat();
     for (let check = 0; check < 1000; check++) {
-      const LogCatBrother = MyBlackDog(consoleDogBrother)
-      if (!LogCatBrother.log) {
+      if (!LogCat.log) {
         alert("Hacked!");
       }
-      LogCatBrother.log(check);
-      LogCatBrother.clear();
+      LogCat.log(check);
+      LogCat.clear();
     }
     const diff = performanceNowCat() - startTime;
     AddSample(SampleList, diff);
