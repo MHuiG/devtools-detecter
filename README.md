@@ -49,3 +49,25 @@ npm install devtools-detecter
 </script>
 ```
 
+## API
+
+- debug()
+  开发调试打印
+- getStatus()
+  获取控制台是否打开状态 返回 `true` 或 `false`
+- setBenchmarkMaxN(value: number)
+  设置基准最大的N， 默认初始值：`7000000`
+- setBenchmark(value: function)
+  设置基准函数，默认详见源码
+- setTimingSamplingMaxN(value: number)
+  设置计时采样最大的N，默认初始值：`1000`
+- setTimer(t: number)
+  设置检测周期，默认初始值：`500`
+- addListener(callBack: (isOpen: boolean) => void)
+  添加监听器
+- launch()
+  开始检测
+- stop()
+  停止检测
+
+
