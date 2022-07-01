@@ -144,16 +144,19 @@ $$
 本方案认为：平均值大于临界水平 或 采样值成接近临界水平的突增趋势时控制台为打开状态。其中：
 
 平均值大于临界水平：
+
 $$
 E(X) > AverageCriticalLevel
 $$
 
 采样值接近临界水平：
+
 $$
 E(X) > AverageCriticalLevel \times 0.85
 $$
 
 样本产生了较大的波动：
+
 $$
 D(X) > VarianceCriticalLevel
 $$
