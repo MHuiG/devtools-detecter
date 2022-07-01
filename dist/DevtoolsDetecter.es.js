@@ -1,6 +1,10 @@
 const DevtoolsDetecter = function() {
   let isOpen = false;
   let debug = false;
+  let benchmarkMaxN = 7e6;
+  let timingSamplingMaxN = 1e3;
+  let timer = 500;
+  let timeOutCtl = null;
   const listeners = [];
   const RunListeners = () => {
     for (const listener of listeners) {
@@ -74,6 +78,7 @@ const DevtoolsDetecter = function() {
     MyBlackCat(MathDog, method, Math[method], Math);
   });
   const MathCat = MyBlackDog(MathDog);
+  const LogCat = MyBlackDog(consoleDog);
   const Average = (arr) => {
     let sum = 0;
     for (let i = 0; i < arr.length; i++) {
@@ -95,9 +100,9 @@ const DevtoolsDetecter = function() {
       arr.shift();
     }
   };
-  const Benchmark = () => {
+  let Benchmark = () => {
     const startTime = performanceNowCat();
-    const maxn = 7e6;
+    const maxn = benchmarkMaxN;
     const pris = new Int8ArrayCat(maxn + 1);
     for (var i = 2; i <= maxn; ++i)
       if (pris[i] === 0)
@@ -115,19 +120,13 @@ const DevtoolsDetecter = function() {
   let VarianceCriticalLevel = CriticalLevel;
   const TimingSampling = () => {
     FlagID++;
-    const consoleDogBrother = MyWhiteDog();
-    const LogCat = MyBlackDog(consoleDog);
-    ["log", "clear"].forEach(function(method) {
-      MyBlackCat(consoleDogBrother, method, LogCat[method], LogCat);
-    });
     const startTime = performanceNowCat();
-    for (let check = 0; check < 1e3; check++) {
-      const LogCatBrother = MyBlackDog(consoleDogBrother);
-      if (!LogCatBrother.log) {
+    for (let check = 0; check < timingSamplingMaxN; check++) {
+      if (!LogCat.log) {
         alert("Hacked!");
       }
-      LogCatBrother.log(check);
-      LogCatBrother.clear();
+      LogCat.log(check);
+      LogCat.clear();
     }
     const diff = performanceNowCat() - startTime;
     AddSample(SampleList, diff);
@@ -151,7 +150,7 @@ const DevtoolsDetecter = function() {
       }
     }
     RunListeners();
-    setTimeoutCat(TimingSampling, 500);
+    timeOutCtl = setTimeoutCat(TimingSampling, timer);
   };
   class DevtoolsDetecter2 {
     debug() {
@@ -168,11 +167,26 @@ const DevtoolsDetecter = function() {
     getStatus() {
       return isOpen;
     }
+    setBenchmarkMaxN(n) {
+      benchmarkMaxN = n;
+    }
+    setTimingSamplingMaxN(n) {
+      timingSamplingMaxN = n;
+    }
+    setBenchmark(callBack) {
+      Benchmark = callBack;
+    }
+    setTimer(t) {
+      timer = t;
+    }
     addListener(callBack) {
       listeners.push(callBack);
     }
     launch() {
       return TimingSampling();
+    }
+    stop() {
+      clearTimeout(timeOutCtl);
     }
   }
   return new DevtoolsDetecter2();
