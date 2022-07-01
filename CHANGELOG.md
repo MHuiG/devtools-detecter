@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.1.0](https://github.com/MHuiG/devtools-detecter/compare/v1.0.1...v1.1.0) (2022-07-01)
+
+
+### Features
+
+* setBenchmark 设置基准函数 ([397dd82](https://github.com/MHuiG/devtools-detecter/commit/397dd8215821230d54185e20ef0691113bf226cf))
+* setBenchmarkMaxN 设置基准最大的N ([397dd82](https://github.com/MHuiG/devtools-detecter/commit/397dd8215821230d54185e20ef0691113bf226cf))
+* setTimer 设置检测周期 ([397dd82](https://github.com/MHuiG/devtools-detecter/commit/397dd8215821230d54185e20ef0691113bf226cf))
+* setTimingSamplingMaxN 设置计时采样最大的N ([397dd82](https://github.com/MHuiG/devtools-detecter/commit/397dd8215821230d54185e20ef0691113bf226cf))
+* stop 设置停止检测 ([397dd82](https://github.com/MHuiG/devtools-detecter/commit/397dd8215821230d54185e20ef0691113bf226cf))
+
+
+### Bug Fixes
+
+* 移除多余的cat ([f3a83a0](https://github.com/MHuiG/devtools-detecter/commit/f3a83a0659d48ff1184f47df09f5595fbc03eed5))
+
+
+### Performance Improvements
+
+* **doc:** 方案设计 ([5bbb83d](https://github.com/MHuiG/devtools-detecter/commit/5bbb83d1eb00e9f82628e6b11db6782782cea454))
+
 ## [1.0.1](https://github.com/MHuiG/devtools-detecter/compare/v1.0.0...v1.0.1) (2022-06-30)
 
 
