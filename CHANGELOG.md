@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/MHuiG/devtools-detecter/compare/v1.3.1...v1.3.2) (2022-07-02)
+
+
+### Performance Improvements
+
+* 调整临界水平 ([45a958d](https://github.com/MHuiG/devtools-detecter/commit/45a958dacc2370b066eeb5b6182fbc459914744b))
+
 ## [1.3.1](https://github.com/MHuiG/devtools-detecter/compare/v1.3.0...v1.3.1) (2022-07-02)
 
 
