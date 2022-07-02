@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/MHuiG/devtools-detecter/compare/v1.2.0...v1.3.0) (2022-07-02)
+
+
+### Features
+
+* ie10 ([fd39f11](https://github.com/MHuiG/devtools-detecter/commit/fd39f114b7d326f899f0592194805163384e8fac))
+
 ## [1.2.0](https://github.com/MHuiG/devtools-detecter/compare/v1.1.0...v1.2.0) (2022-07-02)
 
 
