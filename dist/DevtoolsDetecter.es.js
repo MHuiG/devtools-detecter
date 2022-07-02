@@ -1,228 +1,306 @@
-const DevtoolsDetecter = function() {
-  let isOpen = false;
-  let isOpenForGetterHack = false;
-  let debug = false;
-  let benchmarkMaxN = 7e6;
-  let timingSamplingMaxN = 1e3;
-  let timer = 500;
-  let TimingSamplingCtl = null;
-  let GetterHackCtl = null;
-  const Status = () => {
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor)
+      descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps)
+    _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps)
+    _defineProperties(Constructor, staticProps);
+  Object.defineProperty(Constructor, "prototype", {
+    writable: false
+  });
+  return Constructor;
+}
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o)
+    return;
+  if (typeof o === "string")
+    return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor)
+    n = o.constructor.name;
+  if (n === "Map" || n === "Set")
+    return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
+    return _arrayLikeToArray(o, minLen);
+}
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length)
+    len = arr.length;
+  for (var i = 0, arr2 = new Array(len); i < len; i++)
+    arr2[i] = arr[i];
+  return arr2;
+}
+function _createForOfIteratorHelper(o, allowArrayLike) {
+  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+  if (!it) {
+    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+      if (it)
+        o = it;
+      var i = 0;
+      var F = function() {
+      };
+      return {
+        s: F,
+        n: function() {
+          if (i >= o.length)
+            return {
+              done: true
+            };
+          return {
+            done: false,
+            value: o[i++]
+          };
+        },
+        e: function(e) {
+          throw e;
+        },
+        f: F
+      };
+    }
+    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+  var normalCompletion = true, didErr = false, err;
+  return {
+    s: function() {
+      it = it.call(o);
+    },
+    n: function() {
+      var step = it.next();
+      normalCompletion = step.done;
+      return step;
+    },
+    e: function(e) {
+      didErr = true;
+      err = e;
+    },
+    f: function() {
+      try {
+        if (!normalCompletion && it.return != null)
+          it.return();
+      } finally {
+        if (didErr)
+          throw err;
+      }
+    }
+  };
+}
+var DevtoolsDetecter = function() {
+  var isOpen = false;
+  var isOpenForGetterHack = false;
+  var _debug = false;
+  var benchmarkMaxN = 7e6;
+  var timingSamplingMaxN = 1e3;
+  var timer = 500;
+  var TimingSamplingCtl = null;
+  var GetterHackCtl = null;
+  var Status = function Status2() {
     return isOpen || isOpenForGetterHack;
   };
-  const listeners = [];
-  const RunListeners = () => {
-    for (const listener of listeners) {
-      try {
-        listener(Status());
-      } catch (e) {
-      }
-    }
-  };
-  const Print = (msg) => {
-    if (debug) {
-      const div2 = document.createElement("div");
-      div2.innerHTML = `${msg}<br>`;
-      document.body.append(div2);
-    }
-  };
-  const MyBigCat = () => {
+  var listeners = [];
+  var RunListeners = function RunListeners2() {
+    var _iterator = _createForOfIteratorHelper(listeners), _step;
     try {
-      const p = [Object, Array, Set, Map, RegExp, String, ""];
-      for (const iterator of p) {
-        if (iterator && iterator.__proto__ && iterator.__proto__.__proto__ && iterator.__proto__.__proto__.constructor) {
-          if (iterator.__proto__.__proto__.constructor.name == "Object") {
-            return iterator;
-          }
+      for (_iterator.s(); !(_step = _iterator.n()).done; ) {
+        var listener = _step.value;
+        try {
+          listener(Status());
+        } catch (_unused) {
         }
       }
-      for (const iterator of Object.keys(window)) {
-        if (window[iterator] && window[iterator].__proto__ && window[iterator].__proto__.__proto__ && window[iterator].__proto__.__proto__.constructor) {
-          if (window[iterator].__proto__.__proto__.constructor.name == "Object") {
-            return window[iterator];
-          }
-        }
-      }
-    } catch (error) {
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
     }
   };
-  const MyWhiteCat = (key, child, parent) => {
-    MyBigCat().__proto__.__proto__[key] = child.bind(parent);
-  };
-  const MyBlackCat = (parentKey, childKey, child, parent) => {
-    const dog = MyBigCat().__proto__.__proto__;
-    if (typeof dog[parentKey] == "undefined") {
-      dog[parentKey] = {};
-    }
-    dog[parentKey][childKey] = child.bind(parent);
-  };
-  const MyWhiteDog = () => {
-    try {
-      return MathCat.random().toString(36).substring(2);
-    } catch (error) {
-      return Math.random().toString(36).substring(2);
+  var Print = function Print2(msg) {
+    if (_debug) {
+      var _div = document.createElement("div");
+      _div.innerHTML = "".concat(msg, "<br>");
+      document.body.appendChild(_div);
     }
   };
-  const MyBlackDog = (key) => {
-    return window[key] || document[key] || MyBigCat()[key];
-  };
-  const MyRedCat = (child, parent) => {
-    const key = MyWhiteDog();
-    MyWhiteCat(key, child, parent);
-    return MyBlackDog(key);
-  };
-  const consoleDog = MyWhiteDog();
-  ["log", "clear"].forEach(function(method) {
-    MyBlackCat(consoleDog, method, console[method], console);
-  });
-  const setIntervalCat = MyRedCat(setInterval, window);
-  const performanceNowCat = MyRedCat(performance.now, performance);
-  const Int8ArrayCat = MyRedCat(Int8Array, window);
-  const MathDog = MyWhiteDog();
-  ["pow", "min", "max", "random"].forEach(function(method) {
-    MyBlackCat(MathDog, method, Math[method], Math);
-  });
-  const MathCat = MyBlackDog(MathDog);
-  const LogCat = MyBlackDog(consoleDog);
-  const log = console;
-  const div = document.createElement("div");
+  var LogCat = console;
+  var MathCat = Math;
+  var Int8ArrayCat = Int8Array;
+  var performanceCat = performance;
+  var setIntervalCat = setInterval;
+  var div = document.createElement("div");
   Object.defineProperty(div, "id", {
-    get: () => {
+    get: function get() {
       isOpenForGetterHack = true;
-      Print(`**** !!!!!! [Getter Hack] DevTools detected !!!!! ****`);
+      Print("**** !!!!!! [Getter Hack] DevTools detected !!!!! ****");
       RunListeners();
     }
   });
-  const GetterHack = () => {
+  var GetterHack = function GetterHack2() {
     isOpenForGetterHack = false;
-    log.log(div);
-    log.clear(div);
+    LogCat.log(div);
+    LogCat.clear(div);
   };
-  const Average = (arr) => {
-    let sum = 0;
-    for (let i = 0; i < arr.length; i++) {
+  var Average = function Average2(arr) {
+    var sum = 0;
+    for (var i = 0; i < arr.length; i++) {
       sum += arr[i];
     }
     return sum / arr.length;
   };
-  const Variance = (arr) => {
-    let avg = Average(arr);
-    let sum = 0;
-    for (let i = 0; i < arr.length; i++) {
+  var Variance = function Variance2(arr) {
+    var avg = Average(arr);
+    var sum = 0;
+    for (var i = 0; i < arr.length; i++) {
       sum += MathCat.pow(arr[i] - avg, 2);
     }
     return sum / arr.length;
   };
-  const AddSample = (arr, item) => {
+  var AddSample = function AddSample2(arr, item) {
     arr.push(item);
     if (arr.length > 5) {
       arr.shift();
     }
   };
-  let Benchmark = () => {
-    const startTime = performanceNowCat();
-    const maxn = benchmarkMaxN;
-    const pris = new Int8ArrayCat(maxn + 1);
-    for (var i = 2; i <= maxn; ++i)
+  var Benchmark = function Benchmark2() {
+    var startTime = performanceCat.now();
+    var maxn = benchmarkMaxN;
+    var pris = new Int8ArrayCat(maxn + 1);
+    for (var i = 2; i <= maxn; ++i) {
       if (pris[i] === 0)
-        for (var j = i * i; j <= maxn; j += i)
+        for (var j = i * i; j <= maxn; j += i) {
           pris[j] = 1;
-    const diff = performanceNowCat() - startTime;
+        }
+    }
+    var diff = performanceCat.now() - startTime;
     return diff;
   };
-  const SampleList = [];
-  const AverageSampleList = [];
-  const VarianceSampleList = [];
-  let FlagID = -1;
-  const CriticalLevel = Benchmark();
-  let AverageCriticalLevel = CriticalLevel;
-  let VarianceCriticalLevel = CriticalLevel;
-  const TimingSampling = () => {
+  var SampleList = [];
+  var AverageSampleList = [];
+  var VarianceSampleList = [];
+  var FlagID = -1;
+  var CriticalLevel = Benchmark();
+  var AverageCriticalLevel = CriticalLevel;
+  var VarianceCriticalLevel = CriticalLevel;
+  var TimingSampling = function TimingSampling2() {
     FlagID++;
-    const startTime = performanceNowCat();
-    for (let check = 0; check < timingSamplingMaxN; check++) {
+    var startTime = performanceCat.now();
+    for (var check = 0; check < timingSamplingMaxN; check++) {
       if (!LogCat.log) {
         alert("Hacked!");
       }
       LogCat.log(check);
       LogCat.clear();
     }
-    const diff = performanceNowCat() - startTime;
+    var diff = performanceCat.now() - startTime;
     AddSample(SampleList, diff);
     Print(SampleList);
     if (FlagID && FlagID % 5 == 0) {
-      const avg = Average(SampleList);
-      const sd = Variance(SampleList);
+      var avg = Average(SampleList);
+      var sd = Variance(SampleList);
       AddSample(AverageSampleList, avg);
       AddSample(VarianceSampleList, sd);
-      Print(`=== Average: ${avg} Variance: ${sd} === `);
+      Print("=== Average: ".concat(avg, " Variance: ").concat(sd, " === "));
       if (avg > AverageCriticalLevel || avg > AverageCriticalLevel * 0.85 && sd > VarianceCriticalLevel && Average([SampleList[0], SampleList[1], SampleList[2]]) < Average([SampleList[1], SampleList[2], SampleList[3]]) && Average([SampleList[1], SampleList[2], SampleList[3]]) < Average([SampleList[2], SampleList[3], SampleList[4]])) {
         isOpen = true;
-        Print(`**** !!!!!! DevTools detected !!!!! ****`);
+        Print("**** !!!!!! DevTools detected !!!!! ****");
       } else {
         isOpen = false;
         if (FlagID >= 25) {
-          AverageCriticalLevel = Average([MathCat.min(MathCat.max(...AverageSampleList), AverageCriticalLevel), CriticalLevel]);
-          VarianceCriticalLevel = Average([MathCat.min(MathCat.max(...VarianceSampleList), VarianceCriticalLevel), CriticalLevel]);
-          Print(`=== AverageCriticalLevel: ${AverageCriticalLevel} VarianceCriticalLevel: ${VarianceCriticalLevel} ===`);
+          AverageCriticalLevel = Average([MathCat.min(MathCat.max.apply(MathCat, AverageSampleList), AverageCriticalLevel), CriticalLevel]);
+          VarianceCriticalLevel = Average([MathCat.min(MathCat.max.apply(MathCat, VarianceSampleList), VarianceCriticalLevel), CriticalLevel]);
+          Print("=== AverageCriticalLevel: ".concat(AverageCriticalLevel, " VarianceCriticalLevel: ").concat(VarianceCriticalLevel, " ==="));
         }
       }
     }
     checkEruda();
     RunListeners();
   };
-  const checkEruda = () => {
-    var _a;
+  var checkEruda = function checkEruda2() {
     if (isOpen)
       return;
     if (typeof eruda !== "undefined") {
-      if (((_a = eruda == null ? void 0 : eruda._devTools) == null ? void 0 : _a._isShow) === true) {
+      var _eruda, _eruda$_devTools;
+      if (((_eruda = eruda) === null || _eruda === void 0 ? void 0 : (_eruda$_devTools = _eruda._devTools) === null || _eruda$_devTools === void 0 ? void 0 : _eruda$_devTools._isShow) === true) {
         isOpen = true;
-        Print(`**** !!!!!! [Eruda] DevTools detected !!!!! ****`);
+        Print("**** !!!!!! [Eruda] DevTools detected !!!!! ****");
       } else {
         isOpen = false;
       }
     }
   };
-  class DevtoolsDetecter2 {
-    debug() {
-      debug = true;
-      Print(`ua: ${navigator.userAgent}`);
-      Print(`hardwareConcurrency: ${navigator.hardwareConcurrency}`);
-      if (performance && performance.memory) {
-        Print(`memory used: ${performance.memory.usedJSHeapSize}`);
-        Print(`memory total: ${performance.memory.totalJSHeapSize}`);
-        Print(`memory limit: ${performance.memory.jsHeapSizeLimit}`);
+  var DevtoolsDetecter2 = /* @__PURE__ */ function() {
+    function DevtoolsDetecter3() {
+      _classCallCheck(this, DevtoolsDetecter3);
+    }
+    _createClass(DevtoolsDetecter3, [{
+      key: "debug",
+      value: function debug() {
+        _debug = true;
+        Print("ua: ".concat(navigator.userAgent));
+        Print("hardwareConcurrency: ".concat(navigator.hardwareConcurrency));
+        if (performance && performance.memory) {
+          Print("memory used: ".concat(performance.memory.usedJSHeapSize));
+          Print("memory total: ".concat(performance.memory.totalJSHeapSize));
+          Print("memory limit: ".concat(performance.memory.jsHeapSizeLimit));
+        }
+        Print("Benchmark: ".concat(CriticalLevel));
       }
-      Print(`Benchmark: ${CriticalLevel}`);
-    }
-    getStatus() {
-      return Status();
-    }
-    setBenchmarkMaxN(n) {
-      benchmarkMaxN = n;
-    }
-    setTimingSamplingMaxN(n) {
-      timingSamplingMaxN = n;
-    }
-    setBenchmark(callBack) {
-      Benchmark = callBack;
-    }
-    setTimer(t) {
-      timer = t;
-    }
-    addListener(callBack) {
-      listeners.push(callBack);
-    }
-    launch() {
-      TimingSamplingCtl = setIntervalCat(TimingSampling, timer);
-      GetterHackCtl = setIntervalCat(GetterHack, timer);
-    }
-    stop() {
-      clearInterval(TimingSamplingCtl);
-      clearInterval(GetterHackCtl);
-    }
-  }
+    }, {
+      key: "getStatus",
+      value: function getStatus() {
+        return Status();
+      }
+    }, {
+      key: "setBenchmarkMaxN",
+      value: function setBenchmarkMaxN(n) {
+        benchmarkMaxN = n;
+      }
+    }, {
+      key: "setTimingSamplingMaxN",
+      value: function setTimingSamplingMaxN(n) {
+        timingSamplingMaxN = n;
+      }
+    }, {
+      key: "setBenchmark",
+      value: function setBenchmark(callBack) {
+        Benchmark = callBack;
+      }
+    }, {
+      key: "setTimer",
+      value: function setTimer(t) {
+        timer = t;
+      }
+    }, {
+      key: "addListener",
+      value: function addListener(callBack) {
+        listeners.push(callBack);
+      }
+    }, {
+      key: "launch",
+      value: function launch() {
+        TimingSamplingCtl = setIntervalCat(TimingSampling, timer);
+        GetterHackCtl = setIntervalCat(GetterHack, timer);
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        clearInterval(TimingSamplingCtl);
+        clearInterval(GetterHackCtl);
+      }
+    }]);
+    return DevtoolsDetecter3;
+  }();
   return new DevtoolsDetecter2();
 }();
 export { DevtoolsDetecter as default };

@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
+import babel from '@rollup/plugin-babel';
 
 export default defineConfig({
   build: {
@@ -14,5 +15,20 @@ export default defineConfig({
       formats: ["es", "umd", "iife"]
     },
     sourcemap: true,
+    rollupOptions: {
+      plugins: [
+        babel({
+          presets: [[
+            "@babel/preset-env",
+            {
+              "corejs": 3,
+              "targets": {
+                "ie": "10"
+              }
+            }
+          ]]
+        })
+      ],
+    }
   }
 })

@@ -7,7 +7,7 @@
 
 [Module Demo](https://devtools-detect.mhuig.top)
 
-[Es6 Demo](https://devtools-detect.mhuig.top/es6/)
+[ES5 Demo](https://devtools-detect.mhuig.top/es5/)
 
 ## Install
 
@@ -200,17 +200,11 @@ ToDo：
 
 ## 离题的内容
 
-### 不支持 IE
-
-2022年6月15日21:00，微软停止支持 Internet Explorer。默哀一分钟。
-
-生成物含有 es6 箭头函数 这些东西。
-
 ### 非浏览器自带的控制台
 
 例如 eruda，该方案无法判断。
 
-### IE 内核的 Edge
+###  IE 及 IE 内核的 Edge
 
 该方案无法判断。
 

@@ -24,70 +24,17 @@ const DevtoolsDetecter = (function () {
     if (debug) {
       const div = document.createElement("div");
       div.innerHTML = `${msg}<br>`;
-      document.body.append(div);
+      document.body.appendChild(div);
     }
   }
-  // Dogs And Cats
-  const MyBigCat = () => {
-    try {
-      const p = [Object, Array, Set, Map, RegExp, String, ""];
-      for (const iterator of p) {
-        if (iterator && iterator.__proto__ && iterator.__proto__.__proto__ && iterator.__proto__.__proto__.constructor) {
-          if (iterator.__proto__.__proto__.constructor.name == 'Object') {
-            return iterator;
-          }
-        }
-      }
-      for (const iterator of Object.keys(window)) {
-        if (window[iterator] && window[iterator].__proto__ && window[iterator].__proto__.__proto__ && window[iterator].__proto__.__proto__.constructor) {
-          if (window[iterator].__proto__.__proto__.constructor.name == 'Object') {
-            return window[iterator];
-          }
-        }
-      }
-    } catch (error) { }
-  }
-  const MyWhiteCat = (key, child, parent) => {
-    MyBigCat().__proto__.__proto__[key] = child.bind(parent);
-  }
-  const MyBlackCat = (parentKey, childKey, child, parent) => {
-    const dog = MyBigCat().__proto__.__proto__;
-    if (typeof dog[parentKey] == "undefined") {
-      dog[parentKey] = {};
-    }
-    dog[parentKey][childKey] = child.bind(parent);
-  }
-  const MyWhiteDog = () => {
-    try {
-      return MathCat.random().toString(36).substring(2);
-    } catch (error) {
-      return Math.random().toString(36).substring(2);
-    }
-  }
-  const MyBlackDog = (key) => {
-    return window[key] || document[key] || MyBigCat()[key];
-  }
-  const MyRedCat = (child, parent) => {
-    const key = MyWhiteDog();
-    MyWhiteCat(key, child, parent);
-    return MyBlackDog(key);
-  }
-  const consoleDog = MyWhiteDog();
-  ['log', 'clear'].forEach(function (method) {
-    MyBlackCat(consoleDog, method, console[method], console);
-  });
-  const setIntervalCat = MyRedCat(setInterval, window);
-  const performanceNowCat = MyRedCat(performance.now, performance)
-  const Int8ArrayCat = MyRedCat(Int8Array, window);
-  const MathDog = MyWhiteDog();
-  ['pow', 'min', 'max', 'random'].forEach(function (method) {
-    MyBlackCat(MathDog, method, Math[method], Math);
-  });
-  const MathCat = MyBlackDog(MathDog);
-  const LogCat = MyBlackDog(consoleDog);
-  const log = console
+  // Cats
+  const LogCat = console;
+  const MathCat = Math;
+  const Int8ArrayCat = Int8Array;
+  const performanceCat = performance;
+  const setIntervalCat = setInterval;
 
-  // getter hack check for IECoreEdge
+  // getter hack check for IE
   const div = document.createElement('div');
   Object.defineProperty(div, "id", {
     get: () => {
@@ -98,8 +45,8 @@ const DevtoolsDetecter = (function () {
   });
   const GetterHack = () => {
     isOpenForGetterHack = false;
-    log.log(div);
-    log.clear(div);
+    LogCat.log(div);
+    LogCat.clear(div);
   }
 
   // 平均值
@@ -128,14 +75,14 @@ const DevtoolsDetecter = (function () {
   }
   // 基准
   let Benchmark = () => {
-    const startTime = performanceNowCat();
+    const startTime = performanceCat.now();
     const maxn = benchmarkMaxN;
     const pris = new Int8ArrayCat(maxn + 1)
     for (var i = 2; i <= maxn; ++i)
       if (pris[i] === 0)
         for (var j = i * i; j <= maxn; j += i)
           pris[j] = 1;
-    const diff = performanceNowCat() - startTime;
+    const diff = performanceCat.now() - startTime;
     return diff;
   }
   // 采样列表
@@ -155,7 +102,7 @@ const DevtoolsDetecter = (function () {
   // 计时采样
   const TimingSampling = () => {
     FlagID++;
-    const startTime = performanceNowCat();
+    const startTime = performanceCat.now();
     for (let check = 0; check < timingSamplingMaxN; check++) {
       if (!LogCat.log) {
         alert("Hacked!");
@@ -163,7 +110,7 @@ const DevtoolsDetecter = (function () {
       LogCat.log(check);
       LogCat.clear();
     }
-    const diff = performanceNowCat() - startTime;
+    const diff = performanceCat.now() - startTime;
     AddSample(SampleList, diff);
     Print(SampleList);
     if (FlagID && FlagID % 5 == 0) {

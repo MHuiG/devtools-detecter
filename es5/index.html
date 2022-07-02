@@ -14,13 +14,13 @@
   <script src="../dist/DevtoolsDetecter.js"></script>
   <script>
     DevtoolsDetecter.debug()
-    DevtoolsDetecter.addListener(isOpen => {
+    DevtoolsDetecter.addListener(function (isOpen) {
       if (isOpen) {
         document.title = "DevTools detected";
         document.body.style["backgroundColor"] = "red";
       } else {
         document.title = "DevTools NOT detected";
-        document.body.style["backgroundColor"] = "unset";
+        document.body.style["backgroundColor"] = "#FFF";
       }
     })
     DevtoolsDetecter.launch()
