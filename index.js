@@ -166,8 +166,21 @@ const DevtoolsDetecter = (function () {
         }
       }
     }
+    checkEruda();
     RunListeners();
     timeOutCtl = setTimeoutCat(TimingSampling, timer);
+  }
+  const checkEruda = () => {
+    if (isOpen)
+      return
+    if (typeof eruda !== 'undefined') {
+      if (eruda?._devTools?._isShow === true) {
+        isOpen = true;
+        Print(`**** !!!!!! Eruda DevTools detected !!!!! ****`);
+      } else {
+        isOpen = false;
+      }
+    }
   }
 
   class DevtoolsDetecter {

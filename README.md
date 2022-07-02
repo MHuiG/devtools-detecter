@@ -196,6 +196,22 @@ ToDo：
 - 页面负载对性能采样函数有哪些影响
 - 什么是最佳的临界水平值，临界水平与哪些变量因素有关
 
+## 离题的内容
+
+### 不支持 IE
+
+2022年6月15日21:00，微软停止支持 Internet Explorer。默哀一分钟。
+
+生成物含有 es6 箭头函数 这些东西。
+
+### 非浏览器自带的控制台
+
+例如 eruda，该方案无法判断。
+
+### IE 内核的 Edge
+
+该方案无法判断。
+
 ## LICENSE
 
 [MIT](https://github.com/MHuiG/devtools-detecter/blob/main/LICENSE)
