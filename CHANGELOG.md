@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/MHuiG/devtools-detecter/compare/v1.1.0...v1.2.0) (2022-07-02)
+
+
+### Features
+
+* check eruda ([65fea36](https://github.com/MHuiG/devtools-detecter/commit/65fea366c40b4d773074c831adaa86e3c4ca86c9))
+* getter hack ([4325d47](https://github.com/MHuiG/devtools-detecter/commit/4325d477d8fe1adc7b8af9820413e8550e14b547))
+
 ## [1.1.0](https://github.com/MHuiG/devtools-detecter/compare/v1.0.1...v1.1.0) (2022-07-01)
 
 
