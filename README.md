@@ -5,7 +5,9 @@
 
 基于定时性能采样的 DevTools 检测
 
-[Demo](https://devtools-detect.mhuig.top)
+[Module Demo](https://devtools-detect.mhuig.top)
+
+[Es6 Demo](https://devtools-detect.mhuig.top/es6/)
 
 ## Install
 
