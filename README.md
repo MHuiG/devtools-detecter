@@ -187,10 +187,8 @@ ToDo：
 设自变量临界水平为 $t$, 基准初值为 $CriticalLevel$,最近的一次滑动窗口集合 $X$,定义新的临界水平为 $f(t)$:
 
 $$
-f(t)=\frac{1}{2}(min(max(X), t)+CriticalLevel)
+f(t)= min(Average(X) \times 5 ,CriticalLevel)
 $$
-
-这是一种自反馈的动态调整。
 
 ToDo：
 

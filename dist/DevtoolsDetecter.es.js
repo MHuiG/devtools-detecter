@@ -137,7 +137,6 @@ var DevtoolsDetecter = function() {
   var MathCat = Math;
   var Int8ArrayCat = Int8Array;
   var setIntervalCat = setInterval;
-  var ObjectCat = Object;
   var DateCat = Date;
   var performanceCat = false;
   if (typeof performance != "undefined") {
@@ -152,12 +151,10 @@ var DevtoolsDetecter = function() {
   };
   var div = document.createElement("div");
   try {
-    ObjectCat.defineProperty(div, "id", {
-      get: function get() {
-        isOpenForGetterHack = true;
-        Print("**** !!!!!! [Getter Hack] DevTools detected !!!!! ****");
-        RunListeners();
-      }
+    div.__defineGetter__("id", function() {
+      isOpenForGetterHack = true;
+      Print("**** !!!!!! [Getter Hack] DevTools detected !!!!! ****");
+      RunListeners();
     });
   } catch (_unused2) {
     isOpenForGetterHack = 0;
@@ -244,8 +241,8 @@ var DevtoolsDetecter = function() {
       } else {
         isOpen = false;
         if (FlagID >= 25) {
-          AverageCriticalLevel = Average([MathCat.min(MathCat.max.apply(MathCat, AverageSampleList), AverageCriticalLevel), CriticalLevel]);
-          VarianceCriticalLevel = Average([MathCat.min(MathCat.max.apply(MathCat, VarianceSampleList), VarianceCriticalLevel), CriticalLevel]);
+          AverageCriticalLevel = MathCat.min(Average(AverageSampleList) * 5, CriticalLevel);
+          VarianceCriticalLevel = MathCat.min(Average(VarianceSampleList) * 5, CriticalLevel);
           Print("=== AverageCriticalLevel: ".concat(AverageCriticalLevel, " VarianceCriticalLevel: ").concat(VarianceCriticalLevel, " ==="));
         }
       }

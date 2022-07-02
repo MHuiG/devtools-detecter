@@ -32,7 +32,6 @@ const DevtoolsDetecter = (function () {
   const MathCat = Math;
   const Int8ArrayCat = Int8Array;
   const setIntervalCat = setInterval;
-  const ObjectCat = Object;
   const DateCat = Date;
   let performanceCat = false;
   if (typeof performance != "undefined") {
@@ -49,12 +48,10 @@ const DevtoolsDetecter = (function () {
   // getter hack check for IE
   const div = document.createElement('div');
   try {
-    ObjectCat.defineProperty(div, "id", {
-      get: () => {
-        isOpenForGetterHack = true;
-        Print(`**** !!!!!! [Getter Hack] DevTools detected !!!!! ****`);
-        RunListeners();
-      }
+    div.__defineGetter__('id', function () {
+      isOpenForGetterHack = true;
+      Print(`**** !!!!!! [Getter Hack] DevTools detected !!!!! ****`);
+      RunListeners();
     });
   } catch {
     isOpenForGetterHack = 0;
@@ -154,8 +151,8 @@ const DevtoolsDetecter = (function () {
         isOpen = false;
         // 微调参数水平
         if (FlagID >= 25) {
-          AverageCriticalLevel = Average([MathCat.min(MathCat.max(...AverageSampleList), AverageCriticalLevel), CriticalLevel]);
-          VarianceCriticalLevel = Average([MathCat.min(MathCat.max(...VarianceSampleList), VarianceCriticalLevel), CriticalLevel]);
+          AverageCriticalLevel = MathCat.min(Average(AverageSampleList) * 5, CriticalLevel);
+          VarianceCriticalLevel = MathCat.min(Average(VarianceSampleList) * 5, CriticalLevel);
           Print(`=== AverageCriticalLevel: ${AverageCriticalLevel} VarianceCriticalLevel: ${VarianceCriticalLevel} ===`);
         }
       }
