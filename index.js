@@ -31,24 +31,57 @@ const DevtoolsDetecter = (function () {
   const LogCat = console;
   const MathCat = Math;
   const Int8ArrayCat = Int8Array;
-  const performanceCat = performance;
   const setIntervalCat = setInterval;
+  const ObjectCat = Object;
+  const DateCat = Date;
+  let performanceCat = false;
+  if (typeof performance != "undefined") {
+    performanceCat = performance;
+  }
+  const now = () => {
+    if (performanceCat) {
+      return performanceCat.now();
+    } else {
+      return +new DateCat;
+    }
+  }
 
   // getter hack check for IE
   const div = document.createElement('div');
-  Object.defineProperty(div, "id", {
-    get: () => {
-      isOpenForGetterHack = true;
-      Print(`**** !!!!!! [Getter Hack] DevTools detected !!!!! ****`);
-      RunListeners();
-    }
-  });
-  const GetterHack = () => {
-    isOpenForGetterHack = false;
-    LogCat.log(div);
-    LogCat.clear(div);
+  try {
+    ObjectCat.defineProperty(div, "id", {
+      get: () => {
+        isOpenForGetterHack = true;
+        Print(`**** !!!!!! [Getter Hack] DevTools detected !!!!! ****`);
+        RunListeners();
+      }
+    });
+  } catch {
+    isOpenForGetterHack = 0;
   }
 
+  const GetterHack = () => {
+    if (isOpenForGetterHack === 0)
+      return;
+    isOpenForGetterHack = false;
+    LogCat.log(div);
+    try {
+      LogCat.clear();
+    } catch { }
+  }
+  const TimingHack = () => {
+    const startTime = now();
+    for (let check = 0; check < timingSamplingMaxN; check++) {
+      if (!LogCat.log) {
+        alert("Hacked!");
+      }
+      LogCat.log(check);
+      try {
+        LogCat.clear();
+      } catch { }
+    }
+    return now() - startTime;
+  }
   // 平均值
   const Average = (arr) => {
     let sum = 0;
@@ -75,14 +108,14 @@ const DevtoolsDetecter = (function () {
   }
   // 基准
   let Benchmark = () => {
-    const startTime = performanceCat.now();
+    const startTime = now();
     const maxn = benchmarkMaxN;
     const pris = new Int8ArrayCat(maxn + 1)
     for (var i = 2; i <= maxn; ++i)
       if (pris[i] === 0)
         for (var j = i * i; j <= maxn; j += i)
           pris[j] = 1;
-    const diff = performanceCat.now() - startTime;
+    const diff = now() - startTime;
     return diff;
   }
   // 采样列表
@@ -102,15 +135,7 @@ const DevtoolsDetecter = (function () {
   // 计时采样
   const TimingSampling = () => {
     FlagID++;
-    const startTime = performanceCat.now();
-    for (let check = 0; check < timingSamplingMaxN; check++) {
-      if (!LogCat.log) {
-        alert("Hacked!");
-      }
-      LogCat.log(check);
-      LogCat.clear();
-    }
-    const diff = performanceCat.now() - startTime;
+    const diff = TimingHack();
     AddSample(SampleList, diff);
     Print(SampleList);
     if (FlagID && FlagID % 5 == 0) {
@@ -156,11 +181,13 @@ const DevtoolsDetecter = (function () {
       debug = true;
       Print(`ua: ${navigator.userAgent}`)
       Print(`hardwareConcurrency: ${navigator.hardwareConcurrency}`)
-      if (performance && performance.memory) {
-        Print(`memory used: ${performance.memory.usedJSHeapSize}`)
-        Print(`memory total: ${performance.memory.totalJSHeapSize}`)
-        Print(`memory limit: ${performance.memory.jsHeapSizeLimit}`)
-      }
+      try {
+        if (performance && performance.memory) {
+          Print(`memory used: ${performance.memory.usedJSHeapSize}`)
+          Print(`memory total: ${performance.memory.totalJSHeapSize}`)
+          Print(`memory limit: ${performance.memory.jsHeapSizeLimit}`)
+        }
+      } catch { }
       Print(`Benchmark: ${CriticalLevel}`)
     }
     getStatus() {

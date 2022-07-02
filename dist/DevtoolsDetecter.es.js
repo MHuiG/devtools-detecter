@@ -136,20 +136,55 @@ var DevtoolsDetecter = function() {
   var LogCat = console;
   var MathCat = Math;
   var Int8ArrayCat = Int8Array;
-  var performanceCat = performance;
   var setIntervalCat = setInterval;
-  var div = document.createElement("div");
-  Object.defineProperty(div, "id", {
-    get: function get() {
-      isOpenForGetterHack = true;
-      Print("**** !!!!!! [Getter Hack] DevTools detected !!!!! ****");
-      RunListeners();
+  var ObjectCat = Object;
+  var DateCat = Date;
+  var performanceCat = false;
+  if (typeof performance != "undefined") {
+    performanceCat = performance;
+  }
+  var now = function now2() {
+    if (performanceCat) {
+      return performanceCat.now();
+    } else {
+      return +new DateCat();
     }
-  });
+  };
+  var div = document.createElement("div");
+  try {
+    ObjectCat.defineProperty(div, "id", {
+      get: function get() {
+        isOpenForGetterHack = true;
+        Print("**** !!!!!! [Getter Hack] DevTools detected !!!!! ****");
+        RunListeners();
+      }
+    });
+  } catch (_unused2) {
+    isOpenForGetterHack = 0;
+  }
   var GetterHack = function GetterHack2() {
+    if (isOpenForGetterHack === 0)
+      return;
     isOpenForGetterHack = false;
     LogCat.log(div);
-    LogCat.clear(div);
+    try {
+      LogCat.clear();
+    } catch (_unused3) {
+    }
+  };
+  var TimingHack = function TimingHack2() {
+    var startTime = now();
+    for (var check = 0; check < timingSamplingMaxN; check++) {
+      if (!LogCat.log) {
+        alert("Hacked!");
+      }
+      LogCat.log(check);
+      try {
+        LogCat.clear();
+      } catch (_unused4) {
+      }
+    }
+    return now() - startTime;
   };
   var Average = function Average2(arr) {
     var sum = 0;
@@ -173,7 +208,7 @@ var DevtoolsDetecter = function() {
     }
   };
   var Benchmark = function Benchmark2() {
-    var startTime = performanceCat.now();
+    var startTime = now();
     var maxn = benchmarkMaxN;
     var pris = new Int8ArrayCat(maxn + 1);
     for (var i = 2; i <= maxn; ++i) {
@@ -182,7 +217,7 @@ var DevtoolsDetecter = function() {
           pris[j] = 1;
         }
     }
-    var diff = performanceCat.now() - startTime;
+    var diff = now() - startTime;
     return diff;
   };
   var SampleList = [];
@@ -194,15 +229,7 @@ var DevtoolsDetecter = function() {
   var VarianceCriticalLevel = CriticalLevel;
   var TimingSampling = function TimingSampling2() {
     FlagID++;
-    var startTime = performanceCat.now();
-    for (var check = 0; check < timingSamplingMaxN; check++) {
-      if (!LogCat.log) {
-        alert("Hacked!");
-      }
-      LogCat.log(check);
-      LogCat.clear();
-    }
-    var diff = performanceCat.now() - startTime;
+    var diff = TimingHack();
     AddSample(SampleList, diff);
     Print(SampleList);
     if (FlagID && FlagID % 5 == 0) {
@@ -249,10 +276,13 @@ var DevtoolsDetecter = function() {
         _debug = true;
         Print("ua: ".concat(navigator.userAgent));
         Print("hardwareConcurrency: ".concat(navigator.hardwareConcurrency));
-        if (performance && performance.memory) {
-          Print("memory used: ".concat(performance.memory.usedJSHeapSize));
-          Print("memory total: ".concat(performance.memory.totalJSHeapSize));
-          Print("memory limit: ".concat(performance.memory.jsHeapSizeLimit));
+        try {
+          if (performance && performance.memory) {
+            Print("memory used: ".concat(performance.memory.usedJSHeapSize));
+            Print("memory total: ".concat(performance.memory.totalJSHeapSize));
+            Print("memory limit: ".concat(performance.memory.jsHeapSizeLimit));
+          }
+        } catch (_unused5) {
         }
         Print("Benchmark: ".concat(CriticalLevel));
       }

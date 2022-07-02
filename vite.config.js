@@ -22,8 +22,11 @@ export default defineConfig({
             "@babel/preset-env",
             {
               "corejs": 3,
+              "useBuiltIns": "entry",
               "targets": {
-                "ie": "10"
+                "chrome":"56",
+                "ie": "10",
+                "safari": "5",
               }
             }
           ]]
