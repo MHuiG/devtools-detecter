@@ -212,6 +212,29 @@ ToDo：
 
 该方案无法判断。
 
+不过有另外的判断方法：`getter hack`.
+
+这项技术利用的是 div 元素中的 id 属性，当 div 元素被发送至控制台（例如 **console.log(div)** ）时，浏览器会自动尝试获取其中的元素id。如果代码在调用了 **console.log** 之后又调用了 **getter** 方法，说明控制台当前正在运行。
+
+简单的概念验证代码如下：
+
+```javascript
+let div = document.createElement('div');
+let loop = setInterval(() => {
+  console.log(div);
+  console.clear();
+});
+Object.defineProperty(div,"id", {get: () => {
+  clearInterval(loop);
+  alert("Dev Tools detected!");
+}});
+```
+`getter hack` 依赖于一个错误 —— 浏览器 DevTools 永远不应该自动调用 getter，因为这些可能有副作用。
+
+高版本的浏览器已经对 `getter hack` 进行了修复，不再起作用，不过它在 IE 内核的 Edge 中仍然起作用。
+
+也就是说这里使用了一个 Bug 解决了另一个 Bug，必须用魔法对付魔法！！！
+
 ## LICENSE
 
 [MIT](https://github.com/MHuiG/devtools-detecter/blob/main/LICENSE)

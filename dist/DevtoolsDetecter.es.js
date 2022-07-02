@@ -1,24 +1,29 @@
 const DevtoolsDetecter = function() {
   let isOpen = false;
+  let isOpenForGetterHack = false;
   let debug = false;
   let benchmarkMaxN = 7e6;
   let timingSamplingMaxN = 1e3;
   let timer = 500;
-  let timeOutCtl = null;
+  let TimingSamplingCtl = null;
+  let GetterHackCtl = null;
+  const Status = () => {
+    return isOpen || isOpenForGetterHack;
+  };
   const listeners = [];
   const RunListeners = () => {
     for (const listener of listeners) {
       try {
-        listener(isOpen);
+        listener(Status());
       } catch (e) {
       }
     }
   };
   const Print = (msg) => {
     if (debug) {
-      const div = document.createElement("div");
-      div.innerHTML = `${msg}<br>`;
-      document.body.append(div);
+      const div2 = document.createElement("div");
+      div2.innerHTML = `${msg}<br>`;
+      document.body.append(div2);
     }
   };
   const MyBigCat = () => {
@@ -70,7 +75,7 @@ const DevtoolsDetecter = function() {
   ["log", "clear"].forEach(function(method) {
     MyBlackCat(consoleDog, method, console[method], console);
   });
-  const setTimeoutCat = MyRedCat(setTimeout, window);
+  const setIntervalCat = MyRedCat(setInterval, window);
   const performanceNowCat = MyRedCat(performance.now, performance);
   const Int8ArrayCat = MyRedCat(Int8Array, window);
   const MathDog = MyWhiteDog();
@@ -79,6 +84,20 @@ const DevtoolsDetecter = function() {
   });
   const MathCat = MyBlackDog(MathDog);
   const LogCat = MyBlackDog(consoleDog);
+  const log = console;
+  const div = document.createElement("div");
+  Object.defineProperty(div, "id", {
+    get: () => {
+      isOpenForGetterHack = true;
+      Print(`**** !!!!!! [Getter Hack] DevTools detected !!!!! ****`);
+      RunListeners();
+    }
+  });
+  const GetterHack = () => {
+    isOpenForGetterHack = false;
+    log.log(div);
+    log.clear(div);
+  };
   const Average = (arr) => {
     let sum = 0;
     for (let i = 0; i < arr.length; i++) {
@@ -151,7 +170,6 @@ const DevtoolsDetecter = function() {
     }
     checkEruda();
     RunListeners();
-    timeOutCtl = setTimeoutCat(TimingSampling, timer);
   };
   const checkEruda = () => {
     var _a;
@@ -160,7 +178,7 @@ const DevtoolsDetecter = function() {
     if (typeof eruda !== "undefined") {
       if (((_a = eruda == null ? void 0 : eruda._devTools) == null ? void 0 : _a._isShow) === true) {
         isOpen = true;
-        Print(`**** !!!!!! Eruda DevTools detected !!!!! ****`);
+        Print(`**** !!!!!! [Eruda] DevTools detected !!!!! ****`);
       } else {
         isOpen = false;
       }
@@ -179,7 +197,7 @@ const DevtoolsDetecter = function() {
       Print(`Benchmark: ${CriticalLevel}`);
     }
     getStatus() {
-      return isOpen;
+      return Status();
     }
     setBenchmarkMaxN(n) {
       benchmarkMaxN = n;
@@ -197,10 +215,12 @@ const DevtoolsDetecter = function() {
       listeners.push(callBack);
     }
     launch() {
-      return TimingSampling();
+      TimingSamplingCtl = setIntervalCat(TimingSampling, timer);
+      GetterHackCtl = setIntervalCat(GetterHack, timer);
     }
     stop() {
-      clearTimeout(timeOutCtl);
+      clearInterval(TimingSamplingCtl);
+      clearInterval(GetterHackCtl);
     }
   }
   return new DevtoolsDetecter2();
