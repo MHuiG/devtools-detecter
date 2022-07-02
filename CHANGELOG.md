@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/MHuiG/devtools-detecter/compare/v1.3.0...v1.3.1) (2022-07-02)
+
+
+### Performance Improvements
+
+* now ([c6ff9d1](https://github.com/MHuiG/devtools-detecter/commit/c6ff9d1cd6abbea10afffe17cddb94f1f21afd24))
+
 ## [1.3.0](https://github.com/MHuiG/devtools-detecter/compare/v1.2.0...v1.3.0) (2022-07-02)
 
 
